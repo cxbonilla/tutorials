@@ -83,15 +83,3 @@ JOIN casting ON (movie.id = casting.movieid)
 JOIN actor ON (actor.id = casting.actorid)
 WHERE name = 'Julie Andrews')
 AND ord = 1;
-
-
-
-
-
-
-
-
-
-
-
-
