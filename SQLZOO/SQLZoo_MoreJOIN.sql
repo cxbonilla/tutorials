@@ -40,46 +40,49 @@ JOIN actor ON (actor.id = casting.actorid)
 WHERE movie.title = 'Alien';
 
 # List the films in which 'Harrison Ford' has appeared
-Select title FROM movie
- JOIN casting ON movie.id = movieid
-  JOIN actor ON casting.actorid = actor.id
+SELECT title
+FROM movie
+JOIN casting ON (movie.id = casting.movieid)
+JOIN actor ON (actor.id = casting.actorid)
 WHERE actor.name = 'Harrison Ford';
 
 # List the films where 'Harrison Ford' has appeared - but not in the starring role. [Note: the ord field of casting gives the position of the actor. If ord=1 then this actor is in the starring role]
-SELECT title FROM movie
- JOIN casting ON movie.id = movieid
-  JOIN actor ON casting.actorid = actor.id
-WHERE actor.name = 'Harrison Ford' AND ord != 1;
+SELECT title
+FROM movie
+JOIN casting ON (movie.id = casting.movieid)
+JOIN actor ON (actor.id = casting.actorid)
+WHERE actor.name = 'Harrison Ford'
+AND casting.ord <> 1;
 
 # List the films together with the leading star for all 1962 films.
-SELECT title, name FROM movie
- JOIN casting ON movie.id = movieid
-  JOIN actor ON casting.actorid = actor.id
-WHERE yr = 1962 AND ord = 1
+SELECT title, name
+FROM movie
+JOIN casting ON (movie.id = casting.movieid)
+JOIN actor ON (actor.id = casting.actorid)
+WHERE ord = 1
+AND yr = 1962;
 
-# Which were the busiest years for 'John Travolta', show the year and the number of movies he made each year for any year in which he made more than 2 movies.
-SELECT yr,COUNT(title) FROM
-  movie JOIN casting ON movie.id=movieid
-         JOIN actor   ON actorid=actor.id
-where name='John Travolta'
+# Which were the busiest years for 'Rock Hudson', show the year and the number of movies he made each year for any year in which he made more than 2 movies.
+SELECT yr, COUNT(movie.id)
+FROM movie
+JOIN casting ON (movie.id = casting.movieid)
+JOIN actor ON (actor.id = casting.actorid)
+WHERE name = 'Rock Hudson'
 GROUP BY yr
-HAVING COUNT(title)=(SELECT MAX(c) FROM
-(SELECT yr,COUNT(title) AS c FROM
-   movie JOIN casting ON movie.id=movieid
-         JOIN actor   ON actorid=actor.id
- where name='John Travolta'
- GROUP BY yr) AS t
-)
+HAVING COUNT(movie.id) > 2;
 
 # List the film title and the leading actor for all of the films 'Julie Andrews' played in.
-SELECT title, name FROM movie
- JOIN casting ON movie.id = movieid
-  JOIN actor ON casting.actorid = actor.id
-   WHERE ord = 1 AND title IN (SELECT title FROM movie
- JOIN casting ON movie.id = movieid
-  JOIN actor ON casting.actorid = actor.id
-    WHERE actor.name = 'Julie Andrews')
-
+SELECT title, name
+FROM movie
+JOIN casting ON (movie.id = casting.movieid)
+JOIN actor ON (actor.id = casting.actorid)
+WHERE title IN
+(SELECT title
+FROM movie
+JOIN casting ON (movie.id = casting.movieid)
+JOIN actor ON (actor.id = casting.actorid)
+WHERE name = 'Julie Andrews')
+AND ord = 1;
 
 
 
